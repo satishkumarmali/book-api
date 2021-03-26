@@ -3,14 +3,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { BookController } from './book.controller';
 import { BookService } from './book.service';
 import { Book } from './book.entity';
-import { Category } from './category.entity';
 import { AuthMiddleware } from '../user/auth.middleware';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([
-            Book,
-            Category,
+            Book
         ])
     ],
     controllers: [BookController],

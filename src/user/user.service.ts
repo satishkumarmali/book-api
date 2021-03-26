@@ -51,14 +51,13 @@ export class UserService {
     public async generateJWT(user)
     {
         const today = new Date();
-        const exp = new Date(today);
-        exp.setDate(today.getDate() + 60);
+        today.setDate(today.getDate() + 60);
 
         return jwt.sign(
         {
             id: user.id,
             email: user.email,
-            exp: exp.getTime() / 1000
+            exp: today.getTime() / 1000
             },
             process.env.SECRET,
         );

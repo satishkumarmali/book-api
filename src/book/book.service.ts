@@ -1,8 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import {
+    paginate,
+    Pagination,
+    IPaginationOptions,
+  } from 'nestjs-typeorm-paginate';
 import { Book } from './book.entity';
-import { Category } from './category.entity';
+import { Category } from '../category/category.entity';
+import { CategoryService } from '../category/category.service';
 
 @Injectable()
 export class BookService {
@@ -11,16 +17,49 @@ export class BookService {
         private readonly bookRepository: Repository<Book>,
         @InjectRepository(Category)
         private readonly categoryRepository: Repository<Category>,
+        @Inject(CategoryService)
+        private readonly categoryService: CategoryService
     ){}
 
-    public async index({page, limit}, params: any = {})
-    {
-        const book = await this.bookRepository.findOne(1);
+    public async index(options: IPaginationOptions, params: any = {})
+    {   
+        const qb = this.getQB();
+        qb.leftJoinAndSelect(
+            'categories',
+            'categories',
+            'categories.id = Book.category_id'
+        );
+        //Filter result
+        if (params.filters) {
+            const filters = params.filters;
+            if (filters.rating) {
+                qb.andWhere(`Book.rating >= ${filters.rating}`);
+            }
+            if(filters.category_id) {
+                qb.andWhere(`Book.category_id = ${filters.category_id}`)
+            }
+        }
+        //Sorting result
+        if(params.sort) {
+            if(params.sort.price) {
+                qb.orderBy('Book.price', params.sort.price)
+            }
+            if(params.sort.rating) {
+                qb.orderBy('Book.rating', params.sort.rating)
+            }
+        } else {
+            qb.orderBy('Book.id', 'DESC');
+        }
+        const bookRes = await paginate<Book>(qb, options);
+        return bookRes;
     }
 
     public async show(id: number)
     {
-        const book = await this.bookRepository.findOne(id);
+        const bookRes = await this.bookRepository.findOne(id);
+        let book = <any>{};
+        book = {...bookRes}
+        book.category = await this.categoryService.show(bookRes.id)
         return book;
     }
 
@@ -51,7 +90,6 @@ export class BookService {
         book.rating = params.rating;
         book.category_id = params.category_id;
         book.description = params.description;
-        book.created_by = params.created_by;
         book.updated_at = new Date();
         const saveUpdateBook = await this.bookRepository.save(book);
 

@@ -12,8 +12,10 @@ import {
     UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Express } from 'express';
+import * as multer from 'multer';
 import { BookService } from './book.service';
+import { validateFile, imageDestination } from '../utils/file_upload.util';
+import { CreateBookDto } from './dto/create_book.dto';
 
 @Controller('api/v1/book')
 export class BookController {
@@ -24,8 +26,7 @@ export class BookController {
 
     @Get()
     async index(
-        @Query() query: any, 
-        @Body() body: any
+        @Query() query: any
     ) {
         const page = query.page ? query.page : 1;
         const limit = query.limit ? query.limit : 10;
@@ -33,13 +34,33 @@ export class BookController {
     }
 
     @Post()
-    @UseInterceptors(FileInterceptor('file'))
+    @UseInterceptors(FileInterceptor('media[0]', {
+        storage: multer.diskStorage({
+            destination: function (req, file, cb) {
+                imageDestination(req, file, cb)
+            },
+            filename: function (req, file, cb) {
+                let fileName = file.originalname.split('.').slice(0, -1).join('') + '-' + Date.now() + '.' + file.originalname.split('.').pop()
+                cb(null, fileName)
+            },
+        }),
+        fileFilter: function (req, file, cb) {
+            let options = { allowedExt: ['.jpg', '.jpeg', '.png'] };
+            validateFile(req, file, cb, options);
+        },
+        limits:{
+        fileSize:1024*500 //max file size Bytes
+        },
+    }))
+
     async store(
-        @Body() body: any,
-        @UploadedFile() file: Express.Multer.File
+        @Body() bookData: CreateBookDto,
+        @UploadedFile() media
     ) {
-        console.log("file upload", file)
-        return await this.bookService.store(body);
+        if(media) {
+            bookData.image = media.filename;
+        }
+        return await this.bookService.store(bookData);
     }
 
     @Get('/:id')

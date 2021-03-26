@@ -1,5 +1,5 @@
 import {
-    IsNotEmpty,
+    IsNotEmpty, IsOptional,
   } from 'class-validator';
 
   export class CreateBookDto {
@@ -18,5 +18,8 @@ import {
 
     @IsNotEmpty()
     category_id: number;
+
+    @IsOptional()
+    image: string;
 
   }

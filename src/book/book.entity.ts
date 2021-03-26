@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Category } from './category.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinColumn, OneToMany } from 'typeorm';
+import { Category } from '../category/category.entity';
 
 @Entity('books')
 
@@ -31,7 +31,16 @@ export class Book{
     @Column()
     created_by: number;
 
-    @OneToMany(() => Category, category => category.book)
+    /* @ManyToMany(type => Category, category => category.id)
+    @JoinColumn({ name: 'category_id' })
+    categories: Category; */
+    /* @OneToMany(type => Category, category => category.book)
+    @JoinColumn({ name: 'category_id' })
+    categories: Category; */
+    /* @ManyToMany(() => Category)
+    @JoinColumn({ name: 'category_id' })
+    categories!: Category[]; */
+    @OneToMany(type => Category, category => category.book)
     categories: Category[];
     
     @Column()
