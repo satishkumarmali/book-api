@@ -73,8 +73,9 @@ export class BookController {
     @Put('/:id')
     async update(
         @Param('id') id: number,
+        @Body() data: any
     ) {
-        return await this.bookService.update(id);
+        return await this.bookService.update(id, data);
     }
 
     @Delete('/:id')
