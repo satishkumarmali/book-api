@@ -24,7 +24,14 @@
 
 ## Description
 
-Book app API using [Nest](https://github.com/nestjs/nest) framework.
+Book app CRUD API using [Nest](https://github.com/nestjs/nest) framework.
+
+## Features
+- [x] User API - signup and login
+- [x] Book API - add, update, delete, listing, detail
+- [x] Sorting book - rating, price
+- [x] Filter book - category, rating
+
 
 ## Installation
 
@@ -35,13 +42,16 @@ $ npm install
 ## Running the app
 
 ```bash
-# development
+# Start
 $ npm run start
 
-# watch mode
+# Development mode
 $ npm run start:dev
 
-# production mode
+# Watch mode
+$ npm run start:watch
+
+# Production mode
 $ npm run start:prod
 ```
 
