@@ -32,13 +32,13 @@ export class BookService {
             'categories.id = Book.category_id'
         );
         //Filter result
-        if (params.filters) {
-            const filters = params.filters;
-            if (filters.rating) {
-                qb.andWhere(`Book.rating >= ${filters.rating}`);
+        if (params.filter) {
+            const filter = params.filter;
+            if (filter.rating) {
+                qb.andWhere(`Book.rating >= ${filter.rating}`);
             }
-            if(filters.category_id) {
-                qb.andWhere(`Book.category_id = ${filters.category_id}`)
+            if(filter.category_id) {
+                qb.andWhere(`Book.category_id = ${filter.category_id}`)
             }
         }
         //Sorting result
