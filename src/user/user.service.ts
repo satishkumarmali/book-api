@@ -29,6 +29,11 @@ export class UserService {
         }
     }
 
+    public async me(id: number)
+    {
+        return await this.show(id);
+    }
+
     public async show(id: number)
     {
         const user = await this.userRepository.findOne(id);

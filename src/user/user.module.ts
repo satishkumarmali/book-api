@@ -2,7 +2,8 @@ import {
   Module, 
   MiddlewareConsumer,
   NestModule,
-  Global
+  Global,
+  RequestMethod,
  } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthController } from './auth.controller';
@@ -24,6 +25,8 @@ import { AuthMiddleware } from './auth.middleware';
 })
 export class UserModule implements NestModule{
   public configure(consumer: MiddlewareConsumer) {
-
+    consumer
+        .apply(AuthMiddleware)
+        .forRoutes({ path: 'api/v1/me', method: RequestMethod.ALL});
   }
 }

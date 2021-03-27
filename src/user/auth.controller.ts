@@ -1,4 +1,13 @@
-import { Body, Controller, Inject, Injectable, Post, HttpStatus } from '@nestjs/common';
+import { 
+    Body, 
+    Controller, 
+    Inject, 
+    Injectable, 
+    Post, 
+    HttpStatus, 
+    Req, 
+    Get,
+} from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { UserService } from './user.service';
 import { LoginDto } from './dto/login.dto';
@@ -26,5 +35,11 @@ export class AuthController {
         let userResponse = <any>{};
         userResponse = { token, ...userRes };
         return userResponse;
+    }
+
+    @Get('/me')
+    async me(@Req() request: any) {
+        const userId = request.authUser.id;
+        return await this.userService.me(userId);
     }
 }
