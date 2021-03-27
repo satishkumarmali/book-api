@@ -9,10 +9,7 @@ export class Category{
 
     @Column()
     name: string;
-    
-   /*  @OneToMany(() => Book, book => book.categories)
-    @JoinColumn({ name: 'id' })
-    book: Book; */
+
     @OneToMany(type => Book, Book => Book.categories)
     book: Book[];
 

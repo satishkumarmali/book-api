@@ -30,16 +30,7 @@ export class Book{
 
     @Column()
     created_by: number;
-
-    /* @ManyToMany(type => Category, category => category.id)
-    @JoinColumn({ name: 'category_id' })
-    categories: Category; */
-    /* @OneToMany(type => Category, category => category.book)
-    @JoinColumn({ name: 'category_id' })
-    categories: Category; */
-    /* @ManyToMany(() => Category)
-    @JoinColumn({ name: 'category_id' })
-    categories!: Category[]; */
+    
     @OneToMany(type => Category, category => category.book)
     categories: Category[];
     

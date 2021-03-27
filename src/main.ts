@@ -6,11 +6,11 @@ import * as express from 'express';
 import * as path from "path";
 
 async function bootstrap() {
-  //const app = await NestFactory.create(AppModule);
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.useGlobalPipes(
     new ValidationPipe({ validationError: { target: false }, transform: true }),
   );
+  //Serve static files
   app.use('/assets', express.static(path.join(__dirname, '..', 'assets')));
   app.enableCors();
   await app.listen(3000);
