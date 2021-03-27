@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as crypto from 'crypto';
 import * as jwt from 'jsonwebtoken';
 import { User } from './user.entity';
+import { CreateUserDto, LoginDto } from './dto';
 
 
 @Injectable()
@@ -13,7 +14,7 @@ export class UserService {
         private readonly userRepository : Repository<User>
     ){}
 
-    public async store(dto)
+    public async store(dto: CreateUserDto)
     {
         const newUser = new User();
         newUser.name = dto.name;
@@ -34,7 +35,7 @@ export class UserService {
         return user;
     }
 
-    public async login(loginUserDto: any)
+    public async login(loginUserDto: LoginDto)
     {
         const findOneOptions = {
             email: loginUserDto.email,

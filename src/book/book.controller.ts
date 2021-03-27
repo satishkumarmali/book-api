@@ -15,7 +15,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import * as multer from 'multer';
 import { BookService } from './book.service';
 import { validateFile, imageDestination } from '../utils/file_upload.util';
-import { CreateBookDto } from './dto/create_book.dto';
+import { CreateBookDto, UpdateBookDto } from './dto';
 
 @Controller('api/v1/book')
 export class BookController {
@@ -40,7 +40,8 @@ export class BookController {
                 imageDestination(req, file, cb)
             },
             filename: function (req, file, cb) {
-                let fileName = file.originalname.split('.').slice(0, -1).join('') + '-' + Date.now() + '.' + file.originalname.split('.').pop()
+                let fileName = file.originalname.split('.').slice(0, -1).join('') 
+                + '-' + Date.now() + '.' + file.originalname.split('.').pop()
                 cb(null, fileName)
             },
         }),
@@ -52,7 +53,6 @@ export class BookController {
         fileSize:1024*500 //max file size Bytes
         },
     }))
-
     async store(
         @Body() bookData: CreateBookDto,
         @UploadedFile() media
@@ -71,10 +71,33 @@ export class BookController {
     }
 
     @Put('/:id')
+    @UseInterceptors(FileInterceptor('media[0]', {
+        storage: multer.diskStorage({
+            destination: function (req, file, cb) {
+                imageDestination(req, file, cb)
+            },
+            filename: function (req, file, cb) {
+                let fileName = file.originalname.split('.').slice(0, -1).join('') 
+                + '-' + Date.now() + '.' + file.originalname.split('.').pop()
+                cb(null, fileName)
+            },
+        }),
+        fileFilter: function (req, file, cb) {
+            let options = { allowedExt: ['.jpg', '.jpeg', '.png'] };
+            validateFile(req, file, cb, options);
+        },
+        limits:{
+        fileSize:1024*500 //max file size Bytes
+        },
+    }))
     async update(
         @Param('id') id: number,
-        @Body() data: any
+        @UploadedFile() media,
+        @Body() data: UpdateBookDto,
     ) {
+        if(media) {
+            data.image = media.filename;
+        }
         return await this.bookService.update(id, data);
     }
 

@@ -9,6 +9,8 @@ import {
 import { Book } from './book.entity';
 import { Category } from '../category/category.entity';
 import { CategoryService } from '../category/category.service';
+import { DTtoTS} from '../utils/date_time.utils';
+import { imgUrl } from '../utils/file_upload.util';
 
 @Injectable()
 export class BookService {
@@ -59,8 +61,8 @@ export class BookService {
         const bookRes = await this.bookRepository.findOne(id);
         let book = <any>{};
         book = {...bookRes}
-        book.category = await this.categoryService.show(bookRes.id)
-        return book;
+        book.category = await this.categoryService.show(bookRes.category_id)
+        return this.buildBookRO(book);
     }
 
     public async store(dto)
@@ -94,6 +96,21 @@ export class BookService {
         const saveUpdateBook = await this.bookRepository.save(book);
 
         return this.show(book.id);
+    }
+
+    public async buildBookRO(book: Book)
+    {
+        return new Promise(async resolve => {
+            let bookRO = <any>{};
+            bookRO = {...book};
+            //Append image url
+            if(book.image) {
+                bookRO.image = await imgUrl(book.image);
+            }
+            bookRO.created_at = DTtoTS(book.created_at);
+            bookRO.updated_at = DTtoTS(book.updated_at);
+            resolve(bookRO);
+        });
     }
 
     public async delete(id: number)

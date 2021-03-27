@@ -50,11 +50,11 @@ $ npm install
 # Start
 $ npm run start
 
-# Development mode
-$ npm run start:dev
-
 # Watch mode
 $ npm run start:watch
+
+# Development mode
+$ npm run start:dev
 
 # Production mode
 $ npm run start:prod
