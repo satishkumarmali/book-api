@@ -26,6 +26,11 @@
 
 Book app CRUD API using [Nest](https://github.com/nestjs/nest) framework.
 
+## Technology
+Node.js Version | NPM Version | MySQL Version
+------------ | -------------|------------
+14.16.0 | 7.6.3 | 5.7.31
+
 ## Features
 - [x] User API - signup and login
 - [x] Book API - add, update, delete, listing, detail
@@ -55,7 +60,7 @@ $ npm run start:watch
 $ npm run start:prod
 ```
 
-## Running the  using PM2
+## Running the app using PM2
 ```bash
 # Compiles and minifies
 $ npm run build
