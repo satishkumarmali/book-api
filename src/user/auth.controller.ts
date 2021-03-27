@@ -31,12 +31,14 @@ export class AuthController {
                 HttpStatus.NOT_FOUND,
               );
         }
+        //JWT token attach
         const token = await this.userService.generateJWT(userRes);
         let userResponse = <any>{};
         userResponse = { token, ...userRes };
         return userResponse;
     }
 
+    /* User detail using token */
     @Get('/me')
     async me(@Req() request: any) {
         const userId = request.authUser.id;
